@@ -47,7 +47,6 @@ describe('UserService', () => {
     };
 
     const result = await service.create(newUser);
-
     expect(result).toEqual(mockUser);
   });
 
