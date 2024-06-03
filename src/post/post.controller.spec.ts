@@ -8,12 +8,29 @@ import { PostService } from './post.service';
 describe('PostController', () => {
   let controller: PostController;
 
+  const mockPost = {
+    id: 1,
+    title: 'test post',
+    description: 'test description',
+    author: {
+      id: 1,
+      email: 'test@test.test',
+      name: 'test123',
+      password: 'test123',
+    },
+  };
+
   const mockPostService = {
     getAll: jest.fn(),
     getOne: jest.fn(),
-    create: jest.fn((dto) => ({ id: Date.now(), ...dto })),
-    update: jest.fn((dto) => ({ id: Date.now(), ...dto })),
+    create: jest.fn(() => Promise.resolve(mockPost)),
+    update: jest.fn(() => Promise.resolve(mockPost)),
     delete: jest.fn(),
+  };
+
+  const mockCacheService = {
+    del: jest.fn(),
+    set: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -27,7 +44,7 @@ describe('PostController', () => {
         },
         {
           provide: CACHE_MANAGER,
-          useValue: {},
+          useValue: mockCacheService,
         },
         ConfigService,
       ],
@@ -47,10 +64,29 @@ describe('PostController', () => {
     const createdPost = jest.spyOn(controller, 'create');
 
     await controller.create(1, {
-      title: 'Created title',
-      description: 'Created description',
+      title: 'test post',
+      description: 'test description',
     });
 
     expect(createdPost).toHaveBeenCalled();
+  });
+
+  it('Обновить пост', async () => {
+    const updatedPost = jest.spyOn(controller, 'update');
+
+    await controller.update(1, 1, {
+      title: 'test post',
+      description: 'test description',
+    });
+
+    expect(updatedPost).toHaveBeenCalled();
+  });
+
+  it('Удалить пост', async () => {
+    const deletedPost = jest.spyOn(controller, 'delete');
+
+    await controller.delete(1, 1);
+
+    expect(deletedPost).toHaveBeenCalled();
   });
 });
