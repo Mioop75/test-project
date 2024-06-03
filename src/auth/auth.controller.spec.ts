@@ -10,6 +10,18 @@ describe('AuthController', () => {
   const mockAuthService = {
     registration: jest.fn((dto) => dto),
     login: jest.fn((dto) => dto),
+    generateTokens: jest.fn(() => ({
+      refreshToken: 'refreshToken',
+      accessToken: 'accessToken',
+    })),
+  };
+
+  const mockUserService = {
+    getAll: jest.fn(),
+    getOne: jest.fn((dto) => dto),
+    create: jest.fn((dto) => dto),
+    update: jest.fn((dto) => dto),
+    delete: jest.fn(() => 'Пользователь был удален'),
   };
 
   beforeEach(async () => {
@@ -23,7 +35,7 @@ describe('AuthController', () => {
         },
         {
           provide: UserService,
-          useValue: {},
+          useValue: mockUserService,
         },
       ],
     })
@@ -36,5 +48,29 @@ describe('AuthController', () => {
 
   it('should be defined', () => {
     expect(controller).toBeDefined();
+  });
+
+  it('Регистрация пользователя', async () => {
+    const newUser = {
+      email: 'test@test.test',
+      name: 'test123',
+      password: 'test123',
+    };
+
+    const result = await controller.registration(newUser);
+
+    expect(result).not.toBeNull();
+  });
+
+  it('Вход пользователя', async () => {
+    const user = {
+      email: 'test@test.test',
+      name: 'test123',
+      password: 'test123',
+    };
+
+    const result = await controller.registration(user);
+
+    expect(result).not.toBeNull();
   });
 });
