@@ -56,7 +56,7 @@ export class PostService {
         },
       });
     } catch (error) {
-      throw new NotFoundException('Статья не найден');
+      throw new NotFoundException('Статья не найдена');
     }
   }
 
